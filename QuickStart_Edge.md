@@ -8,11 +8,13 @@ The edge platform is based on AMD Ryzen AI PC for driving the SO101-ARM for crea
 
 ### Target Enviroment
 
+```text
 AMD Ryzen AI 9 HX370 PC
 OS: ubuntu 24.04
 ROCm v6.3+
 PyTorch v2.7.x
 LeRobot: v0.4.0
+```
 
 ### Pre-requisites
 
@@ -22,9 +24,13 @@ The BIOS UI may be different from vendors. You should refer to the User Guide ab
 
 Here are two examples for reference,
 
+```
 Enter the BIOS Setup => Advanced => GFX Configuration => UMA Frame buffer Size => 16GB
+```
 
+```
 Enter the BIOS Setup => Advanced => AMD CBS => NBIO Common Options => GFX Configuration => Dedicated Graphics Memory => 16GB
+```
 
 #### Install Ubuntu 24.04 LTS on the AMD Ryzen AI PC
 
@@ -56,7 +62,7 @@ video                  77824  1 amdgpu
 
 ### Setup the ROCm Development Environment for the LeRobot
 
-At now [2025/10],  LeRobot depends on PyTorch version >=2.2.1, <2.8.0 (see `pyproject.toml` )
+At now [2025/11],  LeRobot depends on PyTorch version >=2.2.1, <2.8.0 (see `pyproject.toml` )
 
 So that we recommend using ROCm 6.3 and PyTorch 2.7 combination to make compatible with LeRobot.
 
@@ -155,6 +161,19 @@ Install the feetech-servo-sdk for SO-ARM101 in this Hackation.
 pip install 'lerobot[feetech]'      # Feetech motor support
 ```
 
-The edge development environment is ready. Refer to https://huggingface.co/docs/lerobot/index to get start the hackathon challenge with LeRobot. 
+The edge development environment is ready. Please refer the [LeRobot Documentation] (https://huggingface.co/docs/lerobot/index)
+for the calibarion, teleop, creating dataset and inference evalution with the SO-101 ARM.
+
+
+
+## Setup the training environment
+
+
+Get start your hackathon challenge with LeRobot. 
 
 Good Luck~
+
+
+## Reference
+
+[LeRobot Documentation] (https://huggingface.co/docs/lerobot/index)
