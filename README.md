@@ -2,7 +2,7 @@
 
 1. QuickStart for setting up LeRobot Development Envrionment with AMD Edge&Cloud ROCm platform.
 
-   [QuickStart_Edge.md](QuickStart.md)
+   [QuickStart.md](QuickStart.md)
 
 2. Template of the GitHub Repo for Challenger to commit their work
 
