@@ -30,7 +30,7 @@ lerobot-find-cameras opencv      # Find OpenCV cameras
 
 ## Calibrate the SO101 ARM
 
-Refer to the [calibrate video] (https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/lerobot/calibrate_so101_2.mp4) and steps in https://huggingface.co/docs/lerobot/so101
+Refer to the [calibrate video](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/lerobot/calibrate_so101_2.mp4) and steps in https://huggingface.co/docs/lerobot/so101
 
 Follower
 
