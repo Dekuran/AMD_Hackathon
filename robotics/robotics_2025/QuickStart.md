@@ -169,6 +169,9 @@ for the calibarion, teleop, creating dataset and inference evalution with the SO
 
 ## Setup the training environment
 
+Please refer to [training-models-on-rocm.ipynb](training-models-on-rocm.ipynb)
+
+## Ready to go
 
 Get start your hackathon challenge with LeRobot. 
 
@@ -177,4 +180,4 @@ Good Luck~
 
 ## Reference
 
-[LeRobot Documentation] (https://huggingface.co/docs/lerobot/index)
+[LeRobot Documentation](https://huggingface.co/docs/lerobot/index)
