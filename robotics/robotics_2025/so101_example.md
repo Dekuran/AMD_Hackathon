@@ -12,12 +12,9 @@ These examples are based on [LeRobot Tutorial](https://huggingface.co/docs/lerob
 1. Connect the leader ARM with USB UART to PC first and it will get `/dev/ttyACM0` on Ubuntu
 2. Connect the follower ARM with USB UART to PC and it will get `/dev/ttyACM1` on Ubuntu
 
-The sequence of the connection of leader ARM and follower ARM will result in different device node names. The following steps with commands are based on:
-
-```text
-leader ARM => /dev/ttyACM0
-follower ARM => /dev/ttyACM1
-```
+The sequence of the connection of leader ARM and follower ARM will result in different device node names. The following steps assume the following names:
+- Leader ARM: /dev/ttyACM0
+- Follower ARM: /dev/ttyACM1
 
 LeRobot provides the command `lerobot-find-port` to help find the UART device node of the SO101 ARM.
 
