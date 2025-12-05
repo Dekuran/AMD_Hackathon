@@ -3,6 +3,8 @@
 Suppose:
 1. You have set up the Ubuntu + ROCm + PyTorch + LeRobot development environment by following [QuickStart.md](QuickStart.md).
 2. You have the SO101 ARM assembled.
+    1. The leader is the arm you control (with the handle).
+    2. The follower is the arm with the pincher.
 
 Here are some key steps with example commands to use the SO101 ARM.
 
@@ -32,9 +34,15 @@ lerobot-find-cameras opencv      # Find OpenCV cameras
 
 ## Calibrate the SO101 ARM
 
-Refer to the [calibrate video](https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/lerobot/calibrate_so101_2.mp4) and steps at https://huggingface.co/docs/lerobot/so101
+Details about the steps can be found at https://huggingface.co/docs/lerobot/so101 (you should NOT do the motor ID setup).
 
-Follower:
+Give USB port permissions:
+```shell
+sudo chmod 666 /dev/ttyACM0
+sudo chmod 666 /dev/ttyACM1
+```
+
+Calibrate the follower:
 
 ```shell
 lerobot-calibrate \
@@ -43,7 +51,7 @@ lerobot-calibrate \
     --robot.id=my_awesome_follower_arm # <- Give the robot a unique name
 ```
 
-Leader:
+Calibrate the leader:
 
 ```shell
 lerobot-calibrate \
