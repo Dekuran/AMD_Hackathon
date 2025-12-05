@@ -10,8 +10,6 @@ Please do the item ahead to join the Hackathon in field. That would save your ti
 
 # FAQ
 
-Ask help from AMD Stuff first for any problem.
-
 1. How to get support for LeRobot with AI?
 A: Recommend to chat with deepwiki for using LeRobot by https://deepwiki.com/huggingface/lerobot or other LLM tools you want.
 
