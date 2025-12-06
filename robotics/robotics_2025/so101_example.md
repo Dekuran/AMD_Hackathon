@@ -101,7 +101,22 @@ lerobot-teleoperate \
 
 We will use the leader ARM to teleoperate the follower ARM to perform the actions we want to record into the dataset.
 
-Follow the instructions here to record, format, and automatically upload the data to Hugging Face: https://huggingface.co/docs/lerobot/il_robots#record-a-dataset
+We use the Hugging Face hub features for uploading your dataset. If you haven’t previously used the Hub, make sure you can login via the cli using a write-access token, this token can be generated from the Hugging Face settings.
+
+Add your token to the CLI by running this command:
+
+```shell
+huggingface-cli login --token ${HUGGINGFACE_TOKEN} --add-to-git-credential
+```
+
+Then store your Hugging Face repository name in a variable:
+
+```shell
+HF_USER=$(hf auth whoami | head -n 1)
+echo $HF_USER
+```
+
+Now you can record a dataset.
 
 Here's an example command once you have setup your Hugging Face credentials:
 
@@ -131,6 +146,8 @@ lerobot-record \
 The terminal has logs to notify you when new episodes start, reset, and when the dataset is recorded.
 
 You can use `Ctrl-c` to stop the recording. Use `--resume=true` in the command to continue the dataset recording with the num_episodes added.
+
+To get more detials about the instructions of record from `https://huggingface.co/docs/lerobot/il_robots#record-a-dataset`
 
 After the recording is done, you can use the dataset for training.
 
