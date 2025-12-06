@@ -101,50 +101,12 @@ lerobot-teleoperate \
 
 We will use the leader ARM to teleoperate the follower ARM to perform the actions we want to record into the dataset.
 
-The example command from the Hugging Face tutorial [here](https://huggingface.co/docs/lerobot/il_robots) will upload the dataset to Hugging Face when you log in to it. 
+Follow the instructions here to record, format, and automatically upload the data to Hugging Face: https://huggingface.co/docs/lerobot/il_robots#record-a-dataset
 
-Here is the login procedure copied from the Hugging Face tutorial:
-
-> Once you're familiar with teleoperation, you can record your first dataset.
->
-> We use the Hugging Face hub features for uploading your dataset. If you haven't previously used the Hub, make sure you can login via the cli using a write-access token. This token can be generated from the Hugging Face settings.
->
-> Add your token to the CLI by running this command:
->
-> `$ huggingface-cli login --token ${HUGGINGFACE_TOKEN} --add-to-git-credential`
->
-> Then store your Hugging Face repository name in a variable:
->
-> `$ HF_USER=$(hf auth whoami | head -n 1)`
-> 
-> `$ echo $HF_USER`
-
-
-Dataset uploading can be disabled by `--dataset.push_to_hub=False`.
-
-```shell
-lerobot-record \
-    --robot.type=so101_follower \
-    --robot.port=/dev/ttyACM1 \
-    --robot.id=my_awesome_follower_arm \
-    --robot.cameras="{top: {type: opencv, index_or_path: 0, width: 640, height: 480, fps: 30}, side: {type: opencv, index_or_path: 2, width: 640, height: 480, fps: 30}}" \
-    --teleop.type=so101_leader \
-    --teleop.port=/dev/ttyACM0 \
-    --teleop.id=my_awesome_leader_arm \
-    --display_data=true \
-    --dataset.repo_id=alexhegit/record-test \
-    --dataset.num_episodes=60 \
-    --dataset.episode_time_s=20 \
-    --dataset.reset_time_s=10 \
-    --dataset.single_task="pickup the cube and place it to the bin" \
-    --dataset.root=${HOME}/so101_dataset/ \
-    --dataset.push_to_hub=False # =True means to upload the dataset to HuggingFace in your space
-```
-
-`--dataset.num_episodes=60` means we will record 60 teleoperation sessions.
-`--dataset.episode_time_s=20` means each episode has 20 seconds; this depends on whether it is enough time for your actions.
-`--dataset.reset_time_s=10` means the reset time between episodes. You may use this time slot to reset your environment, like recovering the position of the cube to the source by hand and waiting to start the next episode recording.
-`--dataset.root=${HOME}/stack2cube_dataset` means where your dataset will be saved.
+- `--dataset.num_episodes=60` means we will record 60 teleoperation sessions.
+- `--dataset.episode_time_s=20` means each episode has 20 seconds; this depends on whether it is enough time for your actions.
+- `--dataset.reset_time_s=10` means the reset time between episodes. You may use this time slot to reset your environment, like recovering the position of the cube to the source by hand and waiting to start the next episode recording.
+- `--dataset.root=${HOME}/stack2cube_dataset` means where your dataset will be saved.
 
 The terminal has logs to notify you when new episodes start, reset, and when the dataset is recorded.
 
@@ -159,24 +121,7 @@ pip uninstall pynput && pip install pynput==1.7.7
 
 ## Training
 
-Refer to the [QuickStart.md](QuickStart.md) to do the training with MI300X on AMD Development Cloud
-
-Suppose you train with `act` policy and save the model at local dir defined by `--output_dir=outputs/train/act_so101_test` with the commands,
-
-```shell
-lerobot-train \
-  --dataset.repo_id=${HF_USER}/so101_test \
-  --dataset.root=${HOME}/lerobot_dataset/ \
-  --policy.type=act \
-  --output_dir=outputs/train/act_so101_test \
-  --job_name=act_so101_test \
-  --policy.device=cuda \
-  --wandb.enable=false \
-  --policy.repo_id=${HF_USER}/my_policy \
-  --policy.push_to_hub=false
-```
-
-To disable model uploading, use `--policy.push_to_hub=false`.
+Refer to the [QuickStart.md](QuickStart.md) to do the training with MI300X on AMD Development Cloud and the Hugging Face + LeRobot instructions here: https://huggingface.co/docs/lerobot/il_robots#train-a-policy.
 
 The checkpoints are generated in `./outputs/train/act_so101_test/checkpoints/` and the last one is `./outputs/train/act_so101_test/checkpoints/last/pretrained_model/`
 
