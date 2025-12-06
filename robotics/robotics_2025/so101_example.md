@@ -3,8 +3,8 @@
 Suppose:
 1. You have set up the Ubuntu + ROCm + PyTorch + LeRobot development environment by following [QuickStart.md](QuickStart.md).
 2. You have the SO101 ARM assembled.
-    1. The leader is the arm you control (with the handle).
-    2. The follower is the arm with the pincher.
+    1. The leader is the arm with the handle that you control.
+    2. The follower is the arm with the pincher and camera.
 
 Here are some key steps with example commands to use the SO101 ARM.
 
@@ -55,9 +55,9 @@ Calibrate the leader:
 
 ```shell
 lerobot-calibrate \
-    --robot.type=so101_leader \
-    --robot.port=/dev/ttyACM0 \ # <- The port of your robot
-    --robot.id=my_awesome_leader_arm # <- Give the robot a unique name
+    --teleop.type=so101_leader \
+    --teleop.port=/dev/ttyACM0 \ # <- The port of your robot
+    --teleop.id=my_awesome_leader_arm # <- Give the robot a unique name
 ```
 
 Then you can use the SO101 ARM 
