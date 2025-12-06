@@ -26,11 +26,17 @@ Suppose you have two cameras, one named `top` and another named `side`. The `top
 1. Please connect the `top` camera first and it will get `/dev/video0` for it.
 2. Then connect the `side` camera and it will get `/dev/video2` for it.
 
-Use the lerobot-find-cameras CLI tool to detect available cameras
+Use the lerobot-find-cameras CLI tool to detect available cameras:
 
 ```shell
 lerobot-find-cameras opencv      # Find OpenCV cameras  
 ```
+
+You can also use `ffplay` to check the camera angles:
+```shell
+ffplay /dev/video*    # Fill in with the camera's index/port
+```
+
 
 ## Calibrate the SO101 ARM
 
