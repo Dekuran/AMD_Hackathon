@@ -1,0 +1,89 @@
+# Setup Script Logs and Markers
+setup_scripts/logs/*.log
+setup_scripts/logs/.step_*
+setup_scripts/logs/.master_setup_complete
+
+# Downloaded packages
+setup_scripts/*.deb
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+
+# Conda
+.conda/
+*.conda
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# PyTorch
+*.pth
+*.pt
+checkpoints/
+runs/
+lightning_logs/
+
+# LeRobot specific
+lerobot_data/
+outputs/
+wandb/
+.hydra/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# System files
+Thumbs.db
+.directory
+
+# Large model files (use Git LFS if needed)
+*.ckpt
+*.safetensors
+*.bin
+
+# ROCm/GPU specific
+*.rocm_smi_log
+
+# Environment and local config (do NOT commit secrets)
+so101_scripts/.env
+so101_scripts/logs/
