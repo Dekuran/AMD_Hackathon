@@ -214,4 +214,245 @@ cd robotics/robotics_2025/so101_scripts
 
 ---
 
+## Issue: Arm Camera Flickering, Lines, or Poor Quality in Rerun
+
+### Symptoms
+- Flickering or unstable arm camera feed in rerun viewer
+- Horizontal lines across the image
+- Image appears to be mixing frames or tearing
+- Choppy or stuttering video
+- Color shifts or exposure changes
+
+### Root Causes
+1. **USB Bandwidth Contention** - Multiple cameras competing for USB bandwidth
+2. **Buffer Underruns** - Camera not getting frames fast enough
+3. **Incorrect Pixel Format** - Using uncompressed format (YUYV) instead of MJPEG
+4. **Auto-Exposure/White Balance** - Automatic adjustments causing flickering
+5. **USB Hub Issues** - Poor quality or overloaded USB hubs
+6. **Frame Rate Too High** - Arm camera trying to match other cameras' FPS
+
+### Solutions
+
+#### Solution 1: Run the Camera Configuration Script (Recommended)
+
+The easiest fix is to run our automated configuration script:
+
+```bash
+cd robotics/robotics_2025/so101_scripts
+
+# Configure arm camera with optimized settings
+./utils/configure_arm_camera.sh
+```
+
+This script will:
+- Set pixel format to MJPEG (reduces bandwidth by ~70%)
+- Lower frame rate to 10 FPS (reduces USB load)
+- Disable auto-exposure and auto-white-balance (reduces flickering)
+- Set fixed gain and exposure values
+- Optimize buffer settings
+
+The configuration is automatically applied when you run:
+- `./scripts/06_teleoperate_with_cameras.sh`
+- `./scripts/07_record_dataset.sh`
+
+#### Solution 2: Adjust Frame Rate in .env
+
+Lower the arm camera frame rate to reduce bandwidth:
+
+```bash
+# Edit .env file
+nano .env
+
+# Add or modify this line:
+ARM_CAMERA_FPS=10    # Try 10, 8, or even 5 FPS
+
+# Save and restart your recording/teleoperation
+```
+
+Lower FPS options:
+- **15 FPS** - Default, good for most cases
+- **10 FPS** - Better stability, still smooth enough
+- **8 FPS** - Very stable, acceptable for training
+- **5 FPS** - Maximum stability, minimum bandwidth
+
+#### Solution 3: Separate USB Controllers
+
+Ensure cameras are on different USB controllers to avoid bandwidth sharing:
+
+```bash
+# Check USB topology
+lsusb -t
+
+# Look for cameras on different USB buses
+# Example output:
+/:  Bus 01.Port 1: Dev 1, Class=root_hub
+    |__ Port 1: Dev 2, If 0, Class=Video  # Top camera
+/:  Bus 02.Port 1: Dev 1, Class=root_hub
+    |__ Port 1: Dev 3, If 0, Class=Video  # Side camera
+/:  Bus 03.Port 1: Dev 1, Class=root_hub
+    |__ Port 1: Dev 4, If 0, Class=Video  # Arm camera (separate bus!)
+```
+
+**Best Practice:**
+- Connect arm camera to a **different USB port** than other cameras
+- Avoid USB hubs if possible - use direct laptop ports
+- If using hubs, use separate hubs for different cameras
+
+#### Solution 4: Manual v4l2 Configuration
+
+If the script doesn't work, manually configure the camera:
+
+```bash
+# Set MJPEG format (most important!)
+v4l2-ctl -d /dev/video4 --set-fmt-video=width=640,height=480,pixelformat=MJPG
+
+# Set frame rate
+v4l2-ctl -d /dev/video4 --set-parm=10
+
+# Disable auto-exposure (reduces flickering)
+v4l2-ctl -d /dev/video4 --set-ctrl=exposure_auto=1
+v4l2-ctl -d /dev/video4 --set-ctrl=exposure_absolute=156
+
+# Disable auto white balance
+v4l2-ctl -d /dev/video4 --set-ctrl=white_balance_temperature_auto=0
+v4l2-ctl -d /dev/video4 --set-ctrl=white_balance_temperature=4600
+
+# Check current settings
+v4l2-ctl -d /dev/video4 --all
+```
+
+#### Solution 5: Reduce Resolution
+
+If bandwidth is still an issue, reduce the arm camera resolution:
+
+```bash
+# Edit .env
+nano .env
+
+# Add these lines:
+ARM_CAMERA_WIDTH=320
+ARM_CAMERA_HEIGHT=240
+
+# Update camera_config.sh to use these values
+```
+
+Then modify [`camera_config.sh`](config/camera_config.sh) to use separate resolution for arm camera.
+
+#### Solution 6: Check USB Cable Quality
+
+- Use **high-quality USB cables** (USB 3.0 rated)
+- Avoid long cables (>2 meters can cause issues)
+- Try different cables if available
+- Ensure cables are fully inserted
+
+### Verification Steps
+
+After applying fixes, verify the camera:
+
+```bash
+# 1. Check camera settings
+v4l2-ctl -d /dev/video4 --all | grep -E "(Format|Frames|Exposure|White)"
+
+# 2. Test with ffplay
+ffplay /dev/video4
+
+# 3. Run teleoperation test
+./scripts/06_teleoperate_with_cameras.sh
+```
+
+### Expected Results
+
+When properly configured, you should see:
+- **Pixel Format:** MJPEG (not YUYV)
+- **Frame Rate:** 10 FPS or lower
+- **Exposure:** Manual mode with fixed value
+- **White Balance:** Manual mode with fixed value
+- **Smooth video** in rerun viewer without flickering or lines
+
+### Advanced Diagnostics
+
+#### Check USB Bandwidth Usage
+
+```bash
+# Install usbutils if needed
+sudo apt install usbutils
+
+# Monitor USB bandwidth
+watch -n 1 'lsusb -t'
+
+# Check for USB errors
+dmesg | grep -i usb | tail -20
+```
+
+#### Test Camera Formats
+
+```bash
+# List supported formats
+v4l2-ctl -d /dev/video4 --list-formats-ext
+
+# Try different formats
+v4l2-ctl -d /dev/video4 --set-fmt-video=pixelformat=MJPG
+v4l2-ctl -d /dev/video4 --set-fmt-video=pixelformat=YUYV
+```
+
+#### Monitor Frame Drops
+
+```bash
+# Run with verbose logging
+lerobot-record --robot.cameras=... --verbose 2>&1 | grep -i "drop\|skip\|late"
+```
+
+### USB Controller Recommendations
+
+**Ideal Setup:**
+- **USB Controller 1:** Top camera (640x480 @ 30 FPS)
+- **USB Controller 2:** Side camera (640x480 @ 30 FPS)
+- **USB Controller 3:** Arm camera (640x480 @ 10 FPS, MJPEG)
+
+**Bandwidth Calculation:**
+- YUYV 640x480 @ 30 FPS ≈ 280 Mbps
+- MJPEG 640x480 @ 30 FPS ≈ 80 Mbps (70% reduction!)
+- MJPEG 640x480 @ 10 FPS ≈ 27 Mbps (90% reduction!)
+
+USB 2.0 bandwidth: 480 Mbps (theoretical), ~280 Mbps (practical)
+
+### Quick Fix Checklist
+
+- [ ] Run `./utils/configure_arm_camera.sh`
+- [ ] Set `ARM_CAMERA_FPS=10` in `.env`
+- [ ] Verify MJPEG format: `v4l2-ctl -d /dev/video4 --get-fmt-video`
+- [ ] Connect arm camera to separate USB port/controller
+- [ ] Use high-quality USB cable
+- [ ] Disable auto-exposure and auto-white-balance
+- [ ] Test with `ffplay /dev/video4` before recording
+
+### Still Having Issues?
+
+If flickering persists after trying all solutions:
+
+1. **Try even lower FPS:** Set `ARM_CAMERA_FPS=5`
+2. **Reduce resolution:** Use 320x240 instead of 640x480
+3. **Check camera hardware:** Some cameras have hardware issues
+4. **Update camera firmware:** Check manufacturer's website
+5. **Try different camera:** Some USB cameras work better than others
+
+### Common Error Messages
+
+**"Cannot set format: Device or resource busy"**
+- Camera is in use by another application
+- Close all camera applications and try again
+- Run: `fuser /dev/video4` to find processes using camera
+
+**"VIDIOC_S_FMT: Invalid argument"**
+- Camera doesn't support requested format
+- Check supported formats: `v4l2-ctl -d /dev/video4 --list-formats-ext`
+- Try YUYV if MJPEG not supported (but expect higher bandwidth)
+
+**"Frame drops detected"**
+- USB bandwidth exceeded
+- Lower FPS or resolution
+- Move camera to different USB controller
+
+---
+
 **Last Updated:** 2025-12-07

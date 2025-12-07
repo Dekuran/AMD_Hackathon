@@ -23,8 +23,13 @@ export CAMERA_WIDTH="${CAMERA_WIDTH:-640}"
 export CAMERA_HEIGHT="${CAMERA_HEIGHT:-480}"
 export CAMERA_FPS="${CAMERA_FPS:-30}"
 
-# Arm camera can use a lower FPS to reduce glitches/bandwidth issues
-export ARM_CAMERA_FPS="${ARM_CAMERA_FPS:-15}"
+# Arm camera optimized settings to reduce flickering/bandwidth issues
+# Lower FPS reduces USB bandwidth contention
+export ARM_CAMERA_FPS="${ARM_CAMERA_FPS:-10}"
+# Use MJPEG format for arm camera (reduces bandwidth by ~70%)
+export ARM_CAMERA_FORMAT="${ARM_CAMERA_FORMAT:-MJPG}"
+# Buffer size for arm camera (helps with frame drops)
+export ARM_CAMERA_BUFFER_SIZE="${ARM_CAMERA_BUFFER_SIZE:-4}"
 
 # Build camera configuration string for LeRobot
 # This is consumed by lerobot-teleoperate / lerobot-record

@@ -76,6 +76,15 @@ fi
 log_success "All devices found"
 echo ""
 
+# Configure arm camera for optimal performance
+log_info "Configuring arm camera to reduce flickering..."
+if "$SCRIPT_DIR/utils/configure_arm_camera.sh"; then
+    log_success "Arm camera configured successfully"
+else
+    log_warning "Arm camera configuration failed, continuing anyway..."
+fi
+echo ""
+
 # Display configuration
 log_info "Configuration:"
 log "  Leader: $LEADER_PORT ($LEADER_ID)"
